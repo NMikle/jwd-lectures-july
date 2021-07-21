@@ -4,9 +4,9 @@ import com.jwd.math.CustomMath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MyAwesomeApplication {
+public class Application {
 
-	private static final Logger LOG = LogManager.getLogger(MyAwesomeApplication.class);
+	private static final Logger LOG = LogManager.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		LOG.trace("Program start");
