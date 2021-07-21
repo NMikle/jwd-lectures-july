@@ -8,10 +8,6 @@
     <artifactId>lectures</artifactId>
     <version>1</version>
 
-    <properties>
-        <exec.mainClass>com.jwd.app.App</exec.mainClass>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
