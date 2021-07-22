@@ -1,4 +1,4 @@
-package com.jwd.math;
+package com.epam.jwd.math;
 
 public class CustomMath {
 	public static int crazySum(int a, int b) {

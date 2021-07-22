@@ -1,6 +1,6 @@
-package com.jwd.app;
+package com.epam.jwd.app;
 
-import com.jwd.math.CustomMath;
+import com.epam.jwd.math.CustomMath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
