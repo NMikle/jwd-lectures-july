@@ -4,10 +4,15 @@ import java.util.Objects;
 
 public class User {
 
+    private final static int MINIMAL_AGE = 0;
+
     private String name;
     private int age;
 
     public User(String name, int age) {
+        if (age < MINIMAL_AGE) {
+            throw new IllegalArgumentException("age should not be negative");
+        }
         this.name = name;
         this.age = age;
     }
@@ -26,6 +31,10 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public static User createUser(String name, int age) {
+        return new User(name, age);
     }
 
     @Override
