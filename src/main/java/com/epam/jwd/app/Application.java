@@ -1,6 +1,7 @@
 package com.epam.jwd.app;
 
-import com.epam.jwd.model.C;
+import com.epam.jwd.model.Employee;
+import com.epam.jwd.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,8 +34,11 @@ public class Application {
 //        final User boris = User.createUser("Boris", 41);
 //        System.out.println(Math.sin(3.0));
 
-        final C c = new C();
-        System.out.println();
-        final C anotherC = new C();
+//        final C c = new C();
+//        System.out.println();
+//        final C anotherC = new C();
+
+        final User paul = new Employee("Paul", 2);
+        paul.createUser("A", 1);
     }
 }

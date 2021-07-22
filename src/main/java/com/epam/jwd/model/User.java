@@ -34,6 +34,7 @@ public class User {
     }
 
     public static User createUser(String name, int age) {
+        System.out.println("createUser from User");
         return new User(name, age);
     }
 
