@@ -26,6 +26,11 @@ public final class Dog extends Animal {
 //    }
 
     @Override
+    public void makeNoise() {
+        System.out.println("Bark");
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -47,5 +52,10 @@ public final class Dog extends Animal {
                 ", tailLength=" + tailLength +
                 ", tail=" + tail +
                 '}';
+    }
+
+    @Override
+    public void move() {
+        System.out.println("Dog moves");
     }
 }

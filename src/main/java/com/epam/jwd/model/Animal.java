@@ -2,7 +2,7 @@ package com.epam.jwd.model;
 
 import java.util.Objects;
 
-public class Animal {
+public abstract class Animal implements Mammal {
 
     private final String name;
     private final int age;
@@ -19,6 +19,8 @@ public class Animal {
     public int getAge() {
         return age;
     }
+
+    public abstract void makeNoise();
 
     @Override
     public boolean equals(Object o) {
