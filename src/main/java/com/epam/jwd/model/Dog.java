@@ -7,7 +7,7 @@ public final class Dog extends Animal {
     private final int tailLength;
     private final Tail tail;
 
-    public Dog(String name, int age, int tailLength, Tail tail) {
+    Dog(String name, int age, int tailLength, Tail tail) {
         super(name, age);
         this.tailLength = tailLength;
         this.tail = tail;

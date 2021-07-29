@@ -6,6 +6,10 @@ public interface Mammal {
 
     void move();
 
+    String getName();
+
+    int getAge();
+
     default void defaultMethodExample() {
         System.out.println("Default method in interface");
     }

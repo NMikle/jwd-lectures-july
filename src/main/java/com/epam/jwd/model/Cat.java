@@ -2,7 +2,7 @@ package com.epam.jwd.model;
 
 public class Cat extends Animal {
 
-    public Cat(String name, int age) {
+    Cat(String name, int age) {
         super(name, age);
     }
 
