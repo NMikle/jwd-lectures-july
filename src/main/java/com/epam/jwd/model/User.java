@@ -6,36 +6,40 @@ public class User {
 
     private final static int MINIMAL_AGE = 0;
 
-    private String name;
-    private int age;
+    private final Integer id;
+    private final String name;
+    private final int age;
 
-    public User(String name, int age) {
+    public User(Integer id, String name, int age) {
+        if (id != null && id <= 0) {
+            throw new IllegalArgumentException("id should not be negative");
+        }
         if (age < MINIMAL_AGE) {
             throw new IllegalArgumentException("age should not be negative");
         }
+        this.id = id;
         this.name = name;
         this.age = age;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public User withId(Integer id) {
+        return new User(id, this.name, this.age);
     }
 
     public static User createUser(String name, int age) {
-        System.out.println("createUser from User");
-        return new User(name, age);
+        return new User(null, name, age);
     }
 
     @Override
@@ -43,18 +47,21 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(name, user.name);
+        return id.equals(user.id)
+                && age == user.age
+                && Objects.equals(name, user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age);
+        return Objects.hash(id, name, age);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
     }

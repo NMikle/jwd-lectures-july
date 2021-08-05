@@ -29,6 +29,11 @@ public class DbUserHolder implements UserHolder {
     }
 
     @Override
+    public int indexOf(User user) {
+        return 0;
+    }
+
+    @Override
     public int size() {
         return 0;
     }

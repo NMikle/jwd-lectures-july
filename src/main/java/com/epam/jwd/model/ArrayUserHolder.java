@@ -60,6 +60,17 @@ public class ArrayUserHolder implements UserHolder {
         return removed;
     }
 
+    public int indexOf(User user) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            final User savedUser = users[i];
+            if (savedUser.equals(user)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
     @Override
     public int size() {
         return size;
@@ -84,17 +95,6 @@ public class ArrayUserHolder implements UserHolder {
         if (size >= users.length) {
             users = Arrays.copyOf(users, size + GROWTH_FACTOR);
         }
-    }
-
-    private int indexOf(User user) {
-        int index = -1;
-        for (int i = 0; i < size; i++) {
-            final User savedUser = users[i];
-            if (savedUser.equals(user)) {
-                index = i;
-            }
-        }
-        return index;
     }
 
     private boolean isInBorders(int index) {

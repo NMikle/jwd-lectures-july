@@ -12,6 +12,8 @@ public interface UserHolder extends Iterable<User> {
 
     User remove(int index);
 
+    int indexOf(User user);
+
     int size();
 
     void clear();
