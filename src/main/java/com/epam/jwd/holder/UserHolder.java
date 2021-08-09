@@ -1,4 +1,6 @@
-package com.epam.jwd.model;
+package com.epam.jwd.holder;
+
+import com.epam.jwd.model.User;
 
 public interface UserHolder extends Iterable<User> {
 

@@ -2,7 +2,7 @@ package com.epam.jwd.repository;
 
 import com.epam.jwd.exception.UserNotFoundException;
 import com.epam.jwd.model.User;
-import com.epam.jwd.model.UserHolder;
+import com.epam.jwd.holder.UserHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
