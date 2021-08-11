@@ -2,7 +2,9 @@ package com.epam.jwd.model;
 
 public class Employee extends User {
 
-    private Tail tail; //mutable field
+    private static final long serialVersionUID = 4137845587730884749L;
+
+    private Tail tail; //mutable field, should also implement Serializable for proper serialization
 
     public Employee(Integer id, String name, int age, Tail tail) {
         super(id, name, age);

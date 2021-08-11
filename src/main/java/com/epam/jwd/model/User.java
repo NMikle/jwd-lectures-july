@@ -1,8 +1,11 @@
 package com.epam.jwd.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User implements Cloneable {
+public class User implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = -4985231161529339713L;
 
     private final static int MINIMAL_AGE = 0;
 
