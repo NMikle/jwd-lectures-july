@@ -2,7 +2,7 @@ package com.epam.jwd.model;
 
 import java.util.Objects;
 
-public class Tail {
+public class Tail implements Cloneable {
 
     private int woolLength;
 
@@ -33,6 +33,16 @@ public class Tail {
     @Override
     public int hashCode() {
         return Objects.hash(woolLength);
+    }
+
+    @Override
+    public Tail clone() {
+        try {
+            return (Tail) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace(); // todo: logging
+            return null;
+        }
     }
 
     @Override

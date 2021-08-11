@@ -2,7 +2,7 @@ package com.epam.jwd.model;
 
 import java.util.Objects;
 
-public class User {
+public class User implements Cloneable {
 
     private final static int MINIMAL_AGE = 0;
 
@@ -11,6 +11,7 @@ public class User {
     private final int age;
 
     public User(Integer id, String name, int age) {
+        System.out.println("user constructor");
         if (id != null && id <= 0) {
             throw new IllegalArgumentException("id should not be negative");
         }
@@ -62,5 +63,15 @@ public class User {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public User clone() {
+        try {
+            return (User) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace(); //todo: logging
+            return null;
+        }
     }
 }
