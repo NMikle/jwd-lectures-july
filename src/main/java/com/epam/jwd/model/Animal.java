@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public abstract class Animal implements Mammal {
 
-    private final String name;
-    private final int age;
+    protected String name;
+    protected int age;
 
     public Animal(String name, int age) {
         this.name = name;
