@@ -13,7 +13,7 @@ public class ArrayEntityHolder<T extends Entity> implements EntityHolder<T> {
 
     private final Function<Integer, T[]> arrayCreatorFunction;
 
-    private T[] users;
+    private T[] elements;
     private int size;
 
     public ArrayEntityHolder(Function<Integer, T[]> arrayCreatorFunction) {
@@ -22,32 +22,32 @@ public class ArrayEntityHolder<T extends Entity> implements EntityHolder<T> {
     }
 
     @Override
-    public int save(T user) {
+    public int save(T element) {
         growIfLimitReached();
-        users[size++] = user;
+        elements[size++] = element;
         return size;
     }
 
     @Override
-    public T save(T user, int index) {
+    public T save(T element, int index) {
         if (!isInBorders(index) || size < --index) {
             return null;
         }
         growIfLimitReached();
-        System.arraycopy(users, index, users, index + 1, size - index);
-        users[index] = user;
+        System.arraycopy(elements, index, elements, index + 1, size - index);
+        elements[index] = element;
         size++;
-        return user;
+        return element;
     }
 
     @Override
     public T retrieve(int index) {
-        return isInBorders(index) ? users[--index] : null;
+        return isInBorders(index) ? elements[--index] : null;
     }
 
     @Override
-    public int remove(T user) {
-        int index = indexOf(user);
+    public int remove(T element) {
+        int index = indexOf(element);
         if (index != -1) {
             this.remove(++index);
         }
@@ -58,19 +58,19 @@ public class ArrayEntityHolder<T extends Entity> implements EntityHolder<T> {
     public T remove(int index) {
         T removed = null;
         if (isInBorders(index)) {
-            removed = users[--index];
-            users[index] = null;
-            System.arraycopy(users, index + 1, users, index, size - index);
+            removed = elements[--index];
+            elements[index] = null;
+            System.arraycopy(elements, index + 1, elements, index, size - index);
             size--;
         }
         return removed;
     }
 
-    public int indexOf(T user) {
+    public int indexOf(T element) {
         int index = -1;
         for (int i = 0; i < size; i++) {
-            final T savedUser = users[i];
-            if (savedUser.equals(user)) {
+            final T savedUser = elements[i];
+            if (savedUser.equals(element)) {
                 index = i;
             }
         }
@@ -99,24 +99,24 @@ public class ArrayEntityHolder<T extends Entity> implements EntityHolder<T> {
 
             @Override
             public T next() {
-                return users[pointer++];
+                return elements[pointer++];
             }
         };
     }
 
     private void initialize(Function<Integer, T[]> arrayCreatorFunction) {
-        this.users = arrayCreatorFunction.apply(INITIAL_USER_AMOUNT);
+        this.elements = arrayCreatorFunction.apply(INITIAL_USER_AMOUNT);
         this.size = 0;
     }
 
     private void growIfLimitReached() {
-        if (size >= users.length) {
-            users = Arrays.copyOf(users, size + GROWTH_FACTOR);
+        if (size >= elements.length) {
+            elements = Arrays.copyOf(elements, size + GROWTH_FACTOR);
         }
     }
 
     private boolean isInBorders(int index) {
-        return index < users.length + 1 && index > 0;
+        return index < elements.length + 1 && index > 0;
     }
 
 }
