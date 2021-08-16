@@ -1,9 +1,11 @@
 package com.epam.jwd.app;
 
+import com.epam.jwd.exception.EntityNotFoundException;
 import com.epam.jwd.holder.ArrayEntityHolder;
 import com.epam.jwd.holder.EntityHolder;
-import com.epam.jwd.model.Dog;
 import com.epam.jwd.model.User;
+import com.epam.jwd.repository.InMemoryEntityRepository;
+import com.epam.jwd.repository.Repository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,11 +24,16 @@ public class Application {
             }
         };
         EntityHolder<User> userHolder = new ArrayEntityHolder<>(userArrayCreationFunction);
-        userHolder.save(new User(1, "A", 5));
-        userHolder.save(new User(2, "B", 6));
-        userHolder.save(new User(3, "C", 7));
-        for (User user : userHolder) {
-            System.out.println(user);
+        Repository<User> repo = new InMemoryEntityRepository<>(userHolder);
+        repo.create(User.createUser("Bob", 22));
+        repo.create(User.createUser("Alice", 31));
+        repo.create(User.createUser("Paul", 44));
+        for (int i = 1; i < 4; i++) {
+            try {
+                System.out.println(repo.read(i));
+            } catch (EntityNotFoundException e) {
+                LOG.error("error while reading by id", e);
+            }
         }
     }
 

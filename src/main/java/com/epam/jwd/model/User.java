@@ -3,7 +3,7 @@ package com.epam.jwd.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class User implements Cloneable, Serializable, Entity {
+public class User implements Cloneable, Serializable, Entity<User> {
 
     private static final long serialVersionUID = -4985231161529339713L;
 

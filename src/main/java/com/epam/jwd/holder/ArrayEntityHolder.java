@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class ArrayEntityHolder<T extends Entity> implements EntityHolder<T> {
+public class ArrayEntityHolder<T extends Entity<T>> implements EntityHolder<T> {
 
     private static final int INITIAL_USER_AMOUNT = 8;
     private static final int GROWTH_FACTOR = 4;
