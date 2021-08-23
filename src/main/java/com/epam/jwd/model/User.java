@@ -3,7 +3,7 @@ package com.epam.jwd.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class User implements Cloneable, Serializable, Entity<User> {
+public class User implements Serializable, Entity<User> {
 
     private static final long serialVersionUID = -4985231161529339713L;
 
@@ -66,15 +66,5 @@ public class User implements Cloneable, Serializable, Entity<User> {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
-    }
-
-    @Override
-    public User clone() {
-        try {
-            return (User) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace(); //todo: logging
-            return null;
-        }
     }
 }
