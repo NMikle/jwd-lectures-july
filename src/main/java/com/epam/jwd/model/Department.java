@@ -2,7 +2,7 @@ package com.epam.jwd.model;
 
 import java.util.Objects;
 
-public class Department {
+public class Department implements Comparable<Department> {
 
     private final String name;
 
@@ -32,5 +32,10 @@ public class Department {
         return "Department{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Department o) {
+        return name.compareTo(o.getName());
     }
 }
