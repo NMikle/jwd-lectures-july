@@ -1,6 +1,6 @@
 package com.epam.jwd.model;
 
-public class Employee extends User {
+public class Employee extends User implements Comparable<Employee> {
 
     private static final long serialVersionUID = 4137845587730884749L;
 
@@ -13,7 +13,6 @@ public class Employee extends User {
 
     public Employee(Integer id, String name, int age, Department department) {
         super(id, name, age);
-        System.out.println("employee constructor");
         this.department = department;
     }
 
@@ -29,5 +28,10 @@ public class Employee extends User {
                 ", age=" + getAge() +
                 ", department=" + department +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Employee o) {
+        return this.getName().compareTo(o.getName());
     }
 }

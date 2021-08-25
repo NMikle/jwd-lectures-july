@@ -1,17 +1,21 @@
 package com.epam.jwd.app;
 
+import com.epam.jwd.model.Animal;
 import com.epam.jwd.model.Department;
 import com.epam.jwd.model.Employee;
-import com.epam.jwd.model.Tail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.TreeMap;
 
 public class Application {
 
@@ -44,21 +48,32 @@ public class Application {
         employeesByDepartments.put(sales, employeesFromSalesDept);
         employeesByDepartments.put(preSales, new HashSet<>());
 
-        for (Map.Entry<Department, Set<Employee>> employeesByDep : employeesByDepartments.entrySet()) {
-            System.out.println(employeesByDep.getKey());
-            System.out.println(employeesByDep.getValue());
-            System.out.println();
+        final List<Employee> marketingSorted = new ArrayList<>(employeesFromMarketingDept);
+        for (Employee employee : marketingSorted) {
+            System.out.println(employee);
         }
+        System.out.println();
+        Collections.sort(marketingSorted);
+        for (Employee employee : marketingSorted) {
+            System.out.println(employee);
+        }
+
+        Comparator<String> stringComparator = Comparator.naturalOrder();
+        Comparator<Employee> employeeComparator = Comparator.naturalOrder();
+        final Comparator<Employee> reversed = employeeComparator.reversed();
+        employeeComparator.compare(new Employee(1, "A", 1, sales), new Employee(2, "B", 2, market));
+//        Comparator<Animal> animalComparator = Comparator.naturalOrder();
+
+//        for (Map.Entry<Department, Set<Employee>> employeesByDep : employeesByDepartments.entrySet()) {
+//            System.out.println(employeesByDep.getKey());
+//            System.out.println(employeesByDep.getValue());
+//            System.out.println();
+//        }
 
 //        for (Employee employee : employees) {
 ////            employees.remove(1); //ConcurrentModificationException
 //            System.out.println(employee);
 //        }
-
-        Set<Test> a = new HashSet<>();
-        a.add(new Test());
-        a.add(new Test());
-        System.out.println(a.size()); // 2
     }
 
     private static class Test {

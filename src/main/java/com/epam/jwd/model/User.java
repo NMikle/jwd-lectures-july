@@ -14,7 +14,6 @@ public class User implements Serializable, Entity<User> {
     private final int age;
 
     public User(Integer id, String name, int age) {
-        System.out.println("user constructor");
         if (id != null && id <= 0) {
             throw new IllegalArgumentException("id should not be negative");
         }

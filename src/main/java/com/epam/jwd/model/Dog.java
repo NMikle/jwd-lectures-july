@@ -6,7 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Objects;
 
-public final class Dog extends Animal implements Externalizable {
+public final class Dog extends Animal implements Externalizable, Comparable<Cat> {
 
     private static final long serialVersionUID = -4850091725485468768L;
 
@@ -85,5 +85,10 @@ public final class Dog extends Animal implements Externalizable {
         this.name = (String) in.readObject();
         this.age = in.readInt();
         this.tailLength = in.readInt();
+    }
+
+    @Override
+    public int compareTo(Cat o) {
+        return Integer.compare(this.age, o.getAge());
     }
 }
