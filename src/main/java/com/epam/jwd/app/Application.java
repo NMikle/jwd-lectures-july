@@ -1,6 +1,5 @@
 package com.epam.jwd.app;
 
-import com.epam.jwd.model.Color;
 import com.epam.jwd.model.Department;
 import com.epam.jwd.model.Employee;
 import org.apache.logging.log4j.LogManager;
@@ -8,10 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Application {
 
@@ -55,10 +51,24 @@ public class Application {
 //        final List<Integer> ints = Arrays.asList(3, 4, 5);//Immutable collection
     }
 
-    private static class Test {
-        @Override
-        public int hashCode() {
-            return 5;
+    private static int countElements(List<? extends Employee> employees, Department department) {
+        int count = 0;
+//        for (T employee : employees) {
+//            if (employee.getDepartment().getName().equals(department.getName())) {
+//                count++;
+//            }
+//        } // <T extends Employee> List<T>
+        for (Employee employee : employees) {
+            if (employee.getDepartment().getName().equals(department.getName())) {
+                count++;
+            }
         }
+//        final Employee employee = employees.get(3); //will compile
+//        employees.add(employee); //will not compile
+        return count;
+    }
+
+    public static void consumerMethod(List<? super Employee> dest) {
+        dest.add(new Employee(1, "", 1, null));
     }
 }
