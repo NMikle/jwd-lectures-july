@@ -1,27 +1,23 @@
 package com.epam.jwd.app;
 
+import com.epam.jwd.model.ExceptionFromStaticField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Application {
 
     private static final Logger LOG = LogManager.getLogger(Application.class);
 
     public static void main(String[] args) {
-        final String input = "A stream pipeline, like the \"widgets\" example above, can be viewed as a query on the stream source.";
-        final String[] words = input.split(" ");
-        final Stream<String> wordsStream = Arrays.stream(words).onClose(() -> System.out.println("stream closed"));
-        final List<String> shortWords = wordsStream.filter(str -> str.length() < 5).collect(Collectors.toList());
-        wordsStream.close();
-        System.out.println("Hello");
-        final List<String> longWords = wordsStream.filter(str -> str.length() >= 5).collect(Collectors.toList());
-        System.out.println(shortWords);
-        System.out.println(longWords);
+//        final ExceptionFromStaticField instance = ExceptionFromStaticField.instance;
+        final Pattern pattern = Pattern.compile("[a-z]+([1-9])");
+        final Matcher matcher = pattern.matcher("input34");
+        System.out.println(matcher.groupCount());
+        System.out.println(matcher.lookingAt());
+//        System.out.println(Pattern.matches("[a-z]+", "input34"));
     }
 
 }

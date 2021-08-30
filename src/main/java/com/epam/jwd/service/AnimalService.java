@@ -3,7 +3,8 @@ package com.epam.jwd.service;
 import com.epam.jwd.model.Animal;
 import com.epam.jwd.model.Mammal;
 
-public class AnimalService {
+public enum AnimalService {
+    INSTANCE;
 
     public void makeAnimalDoNoises(Animal animal) {
         System.out.printf("Animal %s makes noise:\n", animal.getName());
