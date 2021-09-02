@@ -6,6 +6,8 @@ import com.epam.jwd.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
+
 public class InMemoryUserRepository implements UserRepository {
 
     private static final Logger LOG = LogManager.getLogger(InMemoryUserRepository.class);
@@ -20,11 +22,11 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User create(User user) {
+    public Optional<User> create(User user) {
         int id = ++maxId;
         final User userWithId = user.withId(id);
         users.save(userWithId);
-        return userWithId;
+        return Optional.of(userWithId);
     }
 
     private int findMaxId() {
@@ -32,26 +34,26 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User read(int id) throws UserNotFoundException {
+    public Optional<User> read(int id) throws UserNotFoundException {
         final User user = findUserById(id);
         if (user == null) {
             throw new UserNotFoundException(String.format(USER_NOT_FOUND_BY_ID_MSG, id));
         }
-        return user;
+        return Optional.of(user);
     }
 
     @Override
-    public User update(User user) throws UserNotFoundException {
-        final User savedUser = this.read(user.getId());
+    public Optional<User> update(User user) throws UserNotFoundException {
+        final User savedUser = this.read(user.getId()).get();
         final int userIndex = users.indexOf(savedUser);
         users.save(user, userIndex);
-        return user;
+        return Optional.of(user);
     }
 
     @Override
     public void delete(int id) {
         try {
-            final User user = this.read(id);
+            final User user = this.read(id).get();
             users.remove(user);
         } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);

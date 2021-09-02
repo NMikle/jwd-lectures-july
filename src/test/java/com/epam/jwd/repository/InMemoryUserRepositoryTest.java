@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,11 +38,11 @@ public class InMemoryUserRepositoryTest {
     public void create_shouldReturnUserWithId_always() {
         final User user = User.createUser("Brad", 43);
 
-        final User actualUser = repo.create(user);
+        final Optional<User> actualUser = repo.create(user);
 
-        assertNotNull(actualUser);
-        assertNotNull(actualUser.getId());
-        verify(holder).save(actualUser);
+        assertTrue(actualUser.isPresent());
+        assertNotNull(actualUser.get().getId());
+        verify(holder).save(actualUser.get());
     }
 
     @Test
@@ -52,15 +53,15 @@ public class InMemoryUserRepositoryTest {
         when(holder.iterator()).thenReturn(userIterator);
         when(userIterator.hasNext()).thenAnswer(new FirstTrueThenFalse());
         when(userIterator.next()).thenReturn(user);
-        User actualUser = null;
+        Optional<User> actualUser = Optional.empty();
 
         try {
             actualUser = repo.read(userId);
         } catch (UserNotFoundException e) {
             fail(e);
         }
-        assertNotNull(actualUser);
-        assertEquals(userId, actualUser.getId());
+        assertTrue(actualUser.isPresent());
+        assertEquals(userId, actualUser.get().getId());
 
         verify(holder).iterator();
         verify(userIterator).hasNext();

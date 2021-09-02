@@ -6,6 +6,8 @@ import com.epam.jwd.model.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
+
 public class InMemoryEntityRepository<T extends Entity<T>> implements Repository<T> {
 
     private static final Logger LOG = LogManager.getLogger(InMemoryEntityRepository.class);
@@ -21,11 +23,11 @@ public class InMemoryEntityRepository<T extends Entity<T>> implements Repository
     }
 
     @Override
-    public T create(T entity) {
+    public Optional<T> create(T entity) {
         int id = ++maxId;
         final T entityWithId = entity.withId(id);
         entities.save(entityWithId);
-        return entityWithId;
+        return Optional.ofNullable(entityWithId);
     }
 
     private int findMaxId() {
@@ -33,26 +35,26 @@ public class InMemoryEntityRepository<T extends Entity<T>> implements Repository
     }
 
     @Override
-    public T read(int id) throws EntityNotFoundException {
+    public Optional<T> read(int id) throws EntityNotFoundException {
         final T entity = findEntityById(id);
         if (entity == null) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_BY_ID_MSG, id));
         }
-        return entity;
+        return Optional.of(entity);
     }
 
     @Override
-    public T update(T entity) throws EntityNotFoundException {
-        final T savedEntity = this.read(entity.getId());
+    public Optional<T> update(T entity) throws EntityNotFoundException {
+        final T savedEntity = this.read(entity.getId()).get();
         final int entityIndex = entities.indexOf(savedEntity);
         entities.save(entity, entityIndex);
-        return entity;
+        return Optional.of(entity);
     }
 
     @Override
     public void delete(int id) {
         try {
-            final T entity = this.read(id);
+            final T entity = this.read(id).get();
             entities.remove(entity);
         } catch (EntityNotFoundException e) {
             LOG.error(e.getMessage(), e);
