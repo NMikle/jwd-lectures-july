@@ -41,4 +41,7 @@ public enum Color {
         }
         throw new IllegalArgumentException(String.format(COLOR_NOT_FOUND_MSG, rgbValue, Color.class.getSimpleName()));
     }
+
+    class Inner {}
+    static class Nested {}
 }
