@@ -1,5 +1,6 @@
 package com.epam.jwd.app;
 
+import com.epam.jwd.concurrency.NicelySynchronizedObject;
 import com.epam.jwd.concurrency.RaceCounter;
 import com.epam.jwd.concurrency.StaleValue;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +60,10 @@ public class Application {
 //        first.join();
 //        second.join();
 //        LOG.info("x: {}, y: {}", x, y);
+
+//        todo: immutable is great for concurrency
+//        final NicelySynchronizedObject hello = new NicelySynchronizedObject("Hello");
+//        hello.getName(); //same result for each thread
     }
 
 }

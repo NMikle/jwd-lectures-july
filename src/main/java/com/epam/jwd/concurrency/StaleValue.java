@@ -7,7 +7,7 @@ public class StaleValue implements Runnable {
 
     private static final Logger LOG = LogManager.getLogger(StaleValue.class);
 
-    private boolean sleep;
+    private boolean sleep; //should be volatile
 
     public void setSleep(boolean sleep) {
         this.sleep = sleep;
