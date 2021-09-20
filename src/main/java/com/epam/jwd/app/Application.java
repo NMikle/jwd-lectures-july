@@ -1,37 +1,64 @@
 package com.epam.jwd.app;
 
-import com.epam.jwd.model.Car;
+import com.epam.jwd.concurrency.RaceCounter;
+import com.epam.jwd.concurrency.StaleValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Iterator;
+import java.util.stream.IntStream;
 
 public class Application {
 
     private static final Logger LOG = LogManager.getLogger(Application.class);
 
-    public static void main(String[] args) {
-        Car car = new Car("aaa");
-//        Car.CarEngine engine = new Car.AwesomeEngine();
-        Car.CarEngine engine = car.new AwesomeEngine("from main");
-        car.drive();
-        engine.launch();
+    static int x = 0;
+    static int y = 0;
+    static int a = 0;
+    static int b = 0;
 
-        final Car.StaticEngineChild staticChild = new Car.StaticEngineChild();
+    public static void main(String[] args) throws InterruptedException {
+//        todo: Simple example:
+//        final MathSquare twoSquare = new MathSquare(2);
+//        final MathSquare threeSquare = new MathSquare(3);
+//        twoSquare.start();
+//        threeSquare.start();
+//        twoSquare.join();
+//        threeSquare.join();
+//        LOG.info("Two squared: {}. Three squared: {}", twoSquare, threeSquare);
 
-        Iterator<Integer> i = new Iterator<Integer>() {
-//            static class Nested {} // nested classes could not be present inside anonymous class
-            class Inner {}
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
+//        todo: Race Condition
+//        RaceCounter c1 = new RaceCounter();
+//        IntStream.range(0, 1_000_000).forEach(i -> c1.increment());
+//
+//        RaceCounter c2 = new RaceCounter();
+//        IntStream.range(0, 1_000_000).parallel().forEach(i -> c2.increment());
+//
+//        LOG.info("c1: {}; c2: {}", c1.getCount(), c2.getCount());
 
-            @Override
-            public Integer next() {
-                return null;
-            }
-        };
+//        todo: stale values
+//        final StaleValue staleValue = new StaleValue();
+//        final Thread thread = new Thread(staleValue);
+//        thread.start();
+//        Thread.sleep(100);
+//        staleValue.setSleep(true);
+//        LOG.info("program end");
+
+//        todo: reordering
+//        final Thread first = new Thread(() -> {
+//            a = 1;
+//            x = b;
+//        });
+//
+//        final Thread second = new Thread(() -> {
+//            b = 1;
+//            y = a;
+//        });
+//        first.start();
+//        second.start();
+//
+//        first.join();
+//        second.join();
+//        LOG.info("x: {}, y: {}", x, y);
     }
 
 }
