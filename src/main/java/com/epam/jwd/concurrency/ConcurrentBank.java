@@ -1,5 +1,7 @@
 package com.epam.jwd.concurrency;
 
+import com.epam.jwd.model.Account;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -65,6 +67,18 @@ public class ConcurrentBank {
     public synchronized static void hello() {
         synchronized (ConcurrentBank.class) {
             System.out.println("Hello");
+        }
+    }
+
+    public void transferMoney(Account from, Account to, int amount) { //deadlock because parameters could be mixed up
+        synchronized (from) {
+            synchronized (to) {
+                if (from.getBalance() < amount) {
+                    throw new IllegalStateException("not enough money");
+                }
+                from.debit(amount);
+                to.credit(amount);
+            }
         }
     }
 

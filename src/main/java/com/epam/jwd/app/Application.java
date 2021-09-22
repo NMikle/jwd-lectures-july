@@ -1,11 +1,10 @@
 package com.epam.jwd.app;
 
-import com.epam.jwd.concurrency.NicelySynchronizedObject;
 import com.epam.jwd.concurrency.RaceCounter;
-import com.epam.jwd.concurrency.StaleValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Date;
 import java.util.stream.IntStream;
 
 public class Application {
@@ -28,13 +27,15 @@ public class Application {
 //        LOG.info("Two squared: {}. Three squared: {}", twoSquare, threeSquare);
 
 //        todo: Race Condition
-//        RaceCounter c1 = new RaceCounter();
-//        IntStream.range(0, 1_000_000).forEach(i -> c1.increment());
-//
-//        RaceCounter c2 = new RaceCounter();
-//        IntStream.range(0, 1_000_000).parallel().forEach(i -> c2.increment());
-//
-//        LOG.info("c1: {}; c2: {}", c1.getCount(), c2.getCount());
+
+        RaceCounter c1 = new RaceCounter();
+        IntStream.range(0, 1_000_000).forEach(i -> c1.increment());
+        final Date start = new Date();
+        RaceCounter c2 = new RaceCounter();
+        IntStream.range(0, 1_000_000).parallel().forEach(i -> c2.increment());
+        final Date end = new Date();
+
+        LOG.info("c1: {}; c2: {}. Time spent: {}", c1.getCount(), c2.getCount(), end.getTime() - start.getTime());
 
 //        todo: stale values
 //        final StaleValue staleValue = new StaleValue();
@@ -64,6 +65,8 @@ public class Application {
 //        todo: immutable is great for concurrency
 //        final NicelySynchronizedObject hello = new NicelySynchronizedObject("Hello");
 //        hello.getName(); //same result for each thread
+
+//        final Thread.State newState = Thread.State.NEW;
     }
 
 }
