@@ -4,8 +4,11 @@ import com.epam.jwd.concurrency.RaceCounter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Date;
-import java.util.stream.IntStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class Application {
 
@@ -16,57 +19,75 @@ public class Application {
     static int a = 0;
     static int b = 0;
 
-    public static void main(String[] args) throws InterruptedException {
-//        todo: Simple example:
-//        final MathSquare twoSquare = new MathSquare(2);
-//        final MathSquare threeSquare = new MathSquare(3);
-//        twoSquare.start();
-//        threeSquare.start();
-//        twoSquare.join();
-//        threeSquare.join();
-//        LOG.info("Two squared: {}. Three squared: {}", twoSquare, threeSquare);
+    public static void main(String[] args) {
+//        List<Employee> employees = new ArrayList<>();
+//        final List<Employee> synchronizedEmployees = Collections.synchronizedList(employees);
+//        new ConcurrentLinkedQueue<>().poll(); // returns null if empty
 
-//        todo: Race Condition
+        final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        RaceCounter c1 = new RaceCounter();
-        IntStream.range(0, 1_000_000).forEach(i -> c1.increment());
-        final Date start = new Date();
-        RaceCounter c2 = new RaceCounter();
-        IntStream.range(0, 1_000_000).parallel().forEach(i -> c2.increment());
-        final Date end = new Date();
+        final Future<Integer> nResult = executorService.submit(() -> workExceptionally(false));
+        final Future<Integer> eResult = executorService.submit(() -> workExceptionally(true));
+        //some other work
 
-        LOG.info("c1: {}; c2: {}. Time spent: {}", c1.getCount(), c2.getCount(), end.getTime() - start.getTime());
+        boolean finished = false;
+        try {
+            while (!finished) {
+                Thread.sleep(100);
+                finished = logResult(nResult);
+                finished |= logResult(eResult);
+            }
 
-//        todo: stale values
-//        final StaleValue staleValue = new StaleValue();
-//        final Thread thread = new Thread(staleValue);
-//        thread.start();
-//        Thread.sleep(100);
-//        staleValue.setSleep(true);
-//        LOG.info("program end");
+//        executorService.shutdownNow();
+            executorService.shutdown(); //new tasks not accepted
+            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                LOG.info("Tasks were not terminated. Shutting down now.");
+                executorService.shutdownNow();
+            }
+            LOG.info("Shutdown success");
+        } catch (InterruptedException e) {
+            LOG.warn("interrupted main thread", e);
+            Thread.currentThread().interrupt();
+            executorService.shutdownNow();
+        }
+    }
 
-//        todo: reordering
-//        final Thread first = new Thread(() -> {
-//            a = 1;
-//            x = b;
-//        });
-//
-//        final Thread second = new Thread(() -> {
-//            b = 1;
-//            y = a;
-//        });
-//        first.start();
-//        second.start();
-//
-//        first.join();
-//        second.join();
-//        LOG.info("x: {}, y: {}", x, y);
+    private static boolean logResult(Future<Integer> possibleResult) throws InterruptedException {
+        if (possibleResult.isDone()) {
+            try {
+                final Integer result = possibleResult.get();
+                LOG.info("Execution properly finished. Result: {}", result);
+            } catch (ExecutionException e) {
+                LOG.error("Execution finished exceptionally", e);
+            }
+            return true;
+        } else {
+            LOG.info("still not completed");
+            return false;
+        }
+    }
 
-//        todo: immutable is great for concurrency
-//        final NicelySynchronizedObject hello = new NicelySynchronizedObject("Hello");
-//        hello.getName(); //same result for each thread
-
-//        final Thread.State newState = Thread.State.NEW;
+    private static int workExceptionally(boolean throwExc) throws InterruptedException {
+        final RaceCounter counter = new RaceCounter();
+        for (int i = 0; i < 1_000_000; i++) {
+            if (Thread.currentThread().isInterrupted()) {
+                LOG.warn("Received interruption request, interrupting the thread.");
+                throw new InterruptedException();
+            }
+            counter.increment();
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            LOG.warn("Interrupted exception occurred", e);
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+        LOG.info("task completed");
+        if (throwExc) {
+            throw new IllegalArgumentException("argument should be false");
+        }
+        return counter.getCount();
     }
 
 }
