@@ -1,25 +1,19 @@
 package com.epam.jwd.holder;
 
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class ArrayUserHolderTest {
+public class ArrayOldUserHolderTest {
 
-    private static final User TEST_USER = new User(1, "Ann", 33);
+    private static final OldUser TEST_OLD_USER = new OldUser(1, "Ann", 33);
 
     private UserHolder holder;
 
@@ -47,7 +41,7 @@ public class ArrayUserHolderTest {
     @Test
     public void save_shouldReturnPositiveIndex_whenHolderEmpty() {
         System.out.println("index check");
-        final int resultId = holder.save(TEST_USER);
+        final int resultId = holder.save(TEST_OLD_USER);
 
         assertTrue(resultId > 0);
     }
@@ -55,12 +49,12 @@ public class ArrayUserHolderTest {
     @Test
     public void retrieve_shouldReturnSameUser_whenIndexCorrect() {
         System.out.println("retrieve check");
-        final int userId = holder.save(TEST_USER);
+        final int userId = holder.save(TEST_OLD_USER);
 
-        final User actualUser = holder.retrieve(userId);
+        final OldUser actualOldUser = holder.retrieve(userId);
 
-        assertNotNull(actualUser, "actual user should not be null");
-        assertSame(TEST_USER, actualUser);
+        assertNotNull(actualOldUser, "actual user should not be null");
+        assertSame(TEST_OLD_USER, actualOldUser);
     }
 
     /*@ParameterizedTest

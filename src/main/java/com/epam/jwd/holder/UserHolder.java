@@ -1,8 +1,8 @@
 package com.epam.jwd.holder;
 
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 
-public interface UserHolder extends EntityHolder<User> {
+public interface UserHolder extends EntityHolder<OldUser> {
 
     static UserHolder create() {
         return new ArrayUserHolder();

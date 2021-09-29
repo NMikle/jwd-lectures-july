@@ -1,6 +1,6 @@
 package com.epam.jwd.model;
 
-public class Employee extends User {
+public class Employee extends OldUser {
 
     private static final long serialVersionUID = 4137845587730884749L;
 

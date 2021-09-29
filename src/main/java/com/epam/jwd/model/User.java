@@ -1,35 +1,30 @@
 package com.epam.jwd.model;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class User implements Serializable, Entity<User> {
+public class User {
 
-    private static final long serialVersionUID = -4985231161529339713L;
-
-    private final static int MINIMAL_AGE = 0;
-
-    private final Integer id;
-    private final String name;
+    private final Long id;
+    private final UserName name;
     private final int age;
+    private final String email;
 
-    public User(Integer id, String name, int age) {
-        if (id != null && id <= 0) {
-            throw new IllegalArgumentException("id should not be negative");
-        }
-        if (age < MINIMAL_AGE) {
-            throw new IllegalArgumentException("age should not be negative");
-        }
+    public User(Long id, UserName name, int age, String email) {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.email = email;
     }
 
-    public Integer getId() {
+    public User(UserName name, int age, String email) {
+        this(null, name, age, email);
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public UserName getName() {
         return name;
     }
 
@@ -37,12 +32,8 @@ public class User implements Serializable, Entity<User> {
         return age;
     }
 
-    public User withId(Integer id) {
-        return new User(id, this.name, this.age);
-    }
-
-    public static User createUser(String name, int age) {
-        return new User(null, name, age);
+    public String getEmail() {
+        return email;
     }
 
     @Override
@@ -50,20 +41,23 @@ public class User implements Serializable, Entity<User> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name);
+        return age == user.age && Objects.equals(id, user.id)
+                && Objects.equals(name, user.name)
+                && Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age);
+        return Objects.hash(id, name, age, email);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name=" + name +
                 ", age=" + age +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

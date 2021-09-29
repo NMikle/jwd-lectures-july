@@ -2,7 +2,7 @@ package com.epam.jwd.repository;
 
 import com.epam.jwd.exception.UserNotFoundException;
 import com.epam.jwd.holder.UserHolder;
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,10 +23,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InMemoryUserRepositoryTest {
+public class InMemoryOldUserRepositoryTest {
 
     @Mock
-    private Iterator<User> userIterator;
+    private Iterator<OldUser> userIterator;
 
     @Mock
     private UserHolder holder;
@@ -36,9 +36,9 @@ public class InMemoryUserRepositoryTest {
 
     @Test
     public void create_shouldReturnUserWithId_always() {
-        final User user = User.createUser("Brad", 43);
+        final OldUser oldUser = OldUser.createUser("Brad", 43);
 
-        final Optional<User> actualUser = repo.create(user);
+        final Optional<OldUser> actualUser = repo.create(oldUser);
 
         assertTrue(actualUser.isPresent());
         assertNotNull(actualUser.get().getId());
@@ -48,12 +48,12 @@ public class InMemoryUserRepositoryTest {
     @Test
     public void read_shouldReturnUserById_whenUserPresent() {
         final int userId = 4;
-        final User user = new User(userId, "Brad", 43);
+        final OldUser oldUser = new OldUser(userId, "Brad", 43);
 
         when(holder.iterator()).thenReturn(userIterator);
         when(userIterator.hasNext()).thenAnswer(new FirstTrueThenFalse());
-        when(userIterator.next()).thenReturn(user);
-        Optional<User> actualUser = Optional.empty();
+        when(userIterator.next()).thenReturn(oldUser);
+        Optional<OldUser> actualUser = Optional.empty();
 
         try {
             actualUser = repo.read(userId);
@@ -73,11 +73,11 @@ public class InMemoryUserRepositoryTest {
     public void read_throwUserNotFoundException_whenUserNotPresent() {
 
         final int userId = 4;
-        final User user = new User(1, "Brad", 43);
+        final OldUser oldUser = new OldUser(1, "Brad", 43);
 
         when(holder.iterator()).thenReturn(userIterator);
         when(userIterator.hasNext()).thenAnswer(new FirstTrueThenFalse());
-        when(userIterator.next()).thenReturn(user);
+        when(userIterator.next()).thenReturn(oldUser);
         try {
             repo.read(userId);
 

@@ -1,6 +1,6 @@
 package com.epam.jwd.holder;
 
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ public class ArrayUserHolder implements UserHolder {
     private static final int INITIAL_USER_AMOUNT = 8;
     private static final int GROWTH_FACTOR = 4;
 
-    private User[] users;
+    private OldUser[] oldUsers;
     private int size;
 
     public ArrayUserHolder() {
@@ -18,32 +18,32 @@ public class ArrayUserHolder implements UserHolder {
     }
 
     @Override
-    public int save(User user) {
+    public int save(OldUser oldUser) {
         growIfLimitReached();
-        users[size++] = user;
+        oldUsers[size++] = oldUser;
         return size;
     }
 
     @Override
-    public User save(User user, int index) {
+    public OldUser save(OldUser oldUser, int index) {
         if (!isInBorders(index) || size < --index) {
             return null;
         }
         growIfLimitReached();
-        System.arraycopy(users, index, users, index + 1, size - index);
-        users[index] = user;
+        System.arraycopy(oldUsers, index, oldUsers, index + 1, size - index);
+        oldUsers[index] = oldUser;
         size++;
-        return user;
+        return oldUser;
     }
 
     @Override
-    public User retrieve(int index) {
-        return isInBorders(index) ? users[--index] : null;
+    public OldUser retrieve(int index) {
+        return isInBorders(index) ? oldUsers[--index] : null;
     }
 
     @Override
-    public int remove(User user) {
-        int index = indexOf(user);
+    public int remove(OldUser oldUser) {
+        int index = indexOf(oldUser);
         if (index != -1) {
             this.remove(++index);
         }
@@ -51,22 +51,22 @@ public class ArrayUserHolder implements UserHolder {
     }
 
     @Override
-    public User remove(int index) {
-        User removed = null;
+    public OldUser remove(int index) {
+        OldUser removed = null;
         if (isInBorders(index)) {
-            removed = users[--index];
-            users[index] = null;
-            System.arraycopy(users, index + 1, users, index, size - index);
+            removed = oldUsers[--index];
+            oldUsers[index] = null;
+            System.arraycopy(oldUsers, index + 1, oldUsers, index, size - index);
             size--;
         }
         return removed;
     }
 
-    public int indexOf(User user) {
+    public int indexOf(OldUser oldUser) {
         int index = -1;
         for (int i = 0; i < size; i++) {
-            final User savedUser = users[i];
-            if (savedUser.equals(user)) {
+            final OldUser savedOldUser = oldUsers[i];
+            if (savedOldUser.equals(oldUser)) {
                 index = i;
             }
         }
@@ -84,26 +84,26 @@ public class ArrayUserHolder implements UserHolder {
     }
 
     @Override
-    public Iterator<User> iterator() {
+    public Iterator<OldUser> iterator() {
         return new UserIterator();
     }
 
     private void initialize() {
-        this.users = new User[INITIAL_USER_AMOUNT];
+        this.oldUsers = new OldUser[INITIAL_USER_AMOUNT];
         this.size = 0;
     }
 
     private void growIfLimitReached() {
-        if (size >= users.length) {
-            users = Arrays.copyOf(users, size + GROWTH_FACTOR);
+        if (size >= oldUsers.length) {
+            oldUsers = Arrays.copyOf(oldUsers, size + GROWTH_FACTOR);
         }
     }
 
     private boolean isInBorders(int index) {
-        return index < users.length + 1 && index > 0;
+        return index < oldUsers.length + 1 && index > 0;
     }
 
-    private class UserIterator implements Iterator<User> {
+    private class UserIterator implements Iterator<OldUser> {
 
         private int pointer;
 
@@ -117,8 +117,8 @@ public class ArrayUserHolder implements UserHolder {
         }
 
         @Override
-        public User next() {
-            return users[pointer++];
+        public OldUser next() {
+            return oldUsers[pointer++];
         }
     }
 }

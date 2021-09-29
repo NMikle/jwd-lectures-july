@@ -2,7 +2,7 @@ package com.epam.jwd.repository;
 
 import com.epam.jwd.exception.UserNotFoundException;
 import com.epam.jwd.holder.UserHolder;
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,11 +22,11 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> create(User user) {
+    public Optional<OldUser> create(OldUser oldUser) {
         int id = ++maxId;
-        final User userWithId = user.withId(id);
-        users.save(userWithId);
-        return Optional.of(userWithId);
+        final OldUser oldUserWithId = oldUser.withId(id);
+        users.save(oldUserWithId);
+        return Optional.of(oldUserWithId);
     }
 
     private int findMaxId() {
@@ -34,36 +34,36 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> read(int id) throws UserNotFoundException {
-        final User user = findUserById(id);
-        if (user == null) {
+    public Optional<OldUser> read(int id) throws UserNotFoundException {
+        final OldUser oldUser = findUserById(id);
+        if (oldUser == null) {
             throw new UserNotFoundException(String.format(USER_NOT_FOUND_BY_ID_MSG, id));
         }
-        return Optional.of(user);
+        return Optional.of(oldUser);
     }
 
     @Override
-    public Optional<User> update(User user) throws UserNotFoundException {
-        final User savedUser = this.read(user.getId()).get();
-        final int userIndex = users.indexOf(savedUser);
-        users.save(user, userIndex);
-        return Optional.of(user);
+    public Optional<OldUser> update(OldUser oldUser) throws UserNotFoundException {
+        final OldUser savedOldUser = this.read(oldUser.getId()).get();
+        final int userIndex = users.indexOf(savedOldUser);
+        users.save(oldUser, userIndex);
+        return Optional.of(oldUser);
     }
 
     @Override
     public void delete(int id) {
         try {
-            final User user = this.read(id).get();
-            users.remove(user);
+            final OldUser oldUser = this.read(id).get();
+            users.remove(oldUser);
         } catch (UserNotFoundException e) {
             LOG.error(e.getMessage(), e);
         }
     }
 
-    private User findUserById(int id) {
-        for (User user : users) {
-            if (user.getId().equals(id)) {
-                return user;
+    private OldUser findUserById(int id) {
+        for (OldUser oldUser : users) {
+            if (oldUser.getId().equals(id)) {
+                return oldUser;
             }
         }
         return null;

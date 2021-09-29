@@ -1,37 +1,37 @@
 package com.epam.jwd.holder;
 
-import com.epam.jwd.model.User;
+import com.epam.jwd.model.OldUser;
 
 import java.util.Iterator;
 
 public class DbUserHolder implements UserHolder {
     @Override
-    public int save(User user) {
+    public int save(OldUser oldUser) {
         return 0;
     }
 
     @Override
-    public User save(User user, int index) {
+    public OldUser save(OldUser oldUser, int index) {
         return null;
     }
 
     @Override
-    public User retrieve(int index) {
+    public OldUser retrieve(int index) {
         return null;
     }
 
     @Override
-    public int remove(User user) {
+    public int remove(OldUser oldUser) {
         return 0;
     }
 
     @Override
-    public User remove(int index) {
+    public OldUser remove(int index) {
         return null;
     }
 
     @Override
-    public int indexOf(User user) {
+    public int indexOf(OldUser oldUser) {
         return 0;
     }
 
@@ -46,7 +46,7 @@ public class DbUserHolder implements UserHolder {
     }
 
     @Override
-    public Iterator<User> iterator() {
+    public Iterator<OldUser> iterator() {
         return null;
     }
 }
