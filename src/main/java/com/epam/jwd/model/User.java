@@ -2,7 +2,9 @@ package com.epam.jwd.model;
 
 import java.util.Objects;
 
-public class User {
+public class User implements DBEntity {
+
+    private static final long serialVersionUID = 7775544605813269973L;
 
     private final Long id;
     private final UserName name;
@@ -20,6 +22,7 @@ public class User {
         this(null, name, age, email);
     }
 
+    @Override
     public Long getId() {
         return id;
     }

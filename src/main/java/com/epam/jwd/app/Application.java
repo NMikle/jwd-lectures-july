@@ -1,6 +1,9 @@
 package com.epam.jwd.app;
 
-import com.epam.jwd.exception.UserNotFoundException;
+import com.epam.jwd.db.EntityExtractionFailedException;
+import com.epam.jwd.db.ResultSetExtractor;
+import com.epam.jwd.db.StatementPreparator;
+import com.epam.jwd.model.DBEntity;
 import com.epam.jwd.model.User;
 import com.epam.jwd.model.UserName;
 import org.apache.logging.log4j.LogManager;
@@ -9,14 +12,13 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
 
 public class Application {
 
@@ -29,6 +31,9 @@ public class Application {
     private static final String SELECT_ALL_SQL = "select id as id," +
             " first_name as f_name, last_name as l_name, age as" +
             " age, email as email from jwd_user";
+    private static final String FIND_USERS_OLDER_THAN_SQL = "select id as id," +
+            " first_name as f_name, last_name as l_name, age as age," +
+            " email as email from jwd_user where age > ?";
     private static final String ID_COLUMN_NAME = "id";
     private static final String FIRST_NAME_COLUMN_NAME = "f_name";
     private static final String LAST_NAME_COLUMN_NAME = "l_name";
@@ -40,6 +45,7 @@ public class Application {
     public static void main(String[] args) {
         LOG.trace("program start");
         registerDrivers();
+//        final List<User> users = fetchUsersOlderThan(30);
         final List<User> users = fetchUsersFromDb();
         users.forEach(user -> LOG.info("found user {}", user));
         deregisterDrivers();
@@ -69,28 +75,55 @@ public class Application {
     }
 
     private static List<User> fetchUsersFromDb() {
-        try (final Connection connection = DriverManager
-                .getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             final Statement statement = connection.createStatement();
-             final ResultSet resultSet = statement.executeQuery(SELECT_ALL_SQL)) {
-            List<User> users = new ArrayList<>();
-            while (resultSet.next()) {
-                final User user = extractUser(resultSet)
-                        .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_MSG));
-                users.add(user);
+        return executeStatement(SELECT_ALL_SQL, Application::extractUser);
+    }
+
+    private static List<User> fetchUsersOlderThan(int i) {
+        return executePrepared(
+                FIND_USERS_OLDER_THAN_SQL,
+                Application::extractUser,
+                st -> st.setInt(1, i)
+        );
+    }
+
+    private static <T extends DBEntity> List<T> executePrepared(String sql,
+                                                                   ResultSetExtractor<T> extractor,
+                                                                   StatementPreparator statementPreparation) {
+        try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             final PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (statementPreparation != null) {
+                statementPreparation.accept(statement);
             }
-            return users;
+            final ResultSet resultSet = statement.executeQuery();
+            return extractor.extractAll(resultSet);
         } catch (SQLException e) {
-            LOG.error("sql error occurred working with users", e);
-        } catch (UserNotFoundException e) {
-            LOG.error("did not found users", e);
+            LOG.error("sql exception occurred", e);
+            LOG.debug("sql: {}", sql);
+        } catch (EntityExtractionFailedException e) {
+            LOG.error("could not extract entity", e);
         }
         return Collections.emptyList();
     }
 
-    private static Optional<User> extractUser(ResultSet resultSet) {
+    private static <T extends DBEntity> List<T> executeStatement(String sql,
+                                                                 ResultSetExtractor<T> extractor) {
+        try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             final Statement statement = connection.createStatement();
+             final ResultSet resultSet = statement.executeQuery(sql)) {
+            return extractor.extractAll(resultSet);
+        } catch (SQLException e) {
+            LOG.error("sql exception occurred", e);
+            LOG.debug("sql: {}", sql);
+        } catch (EntityExtractionFailedException e) {
+            LOG.error("could not extract entity", e);
+        }
+        return Collections.emptyList();
+    }
+
+
+    private static User extractUser(ResultSet resultSet) throws EntityExtractionFailedException {
         try {
-            return Optional.of(new User(
+            return new User(
                     resultSet.getLong(ID_COLUMN_NAME),
                     new UserName(
                             resultSet.getString(FIRST_NAME_COLUMN_NAME),
@@ -98,11 +131,10 @@ public class Application {
                     ),
                     resultSet.getInt(AGE_COLUMN_NAME),
                     resultSet.getString(EMAIL_COLUMN_NAME)
-            ));
+            );
         } catch (SQLException e) {
             LOG.error("could not extract value from result set", e);
-            return Optional.empty();
+            throw new EntityExtractionFailedException("failed to extract user");
         }
     }
-
 }
