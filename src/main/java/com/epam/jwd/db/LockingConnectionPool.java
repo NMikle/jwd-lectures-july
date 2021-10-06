@@ -37,7 +37,6 @@ public enum LockingConnectionPool implements ConnectionPool {
     @Override
     public synchronized boolean init() {
         if (!initialized) {
-            registerDrivers();
             initializeConnections(INITIAL_CONNECTIONS_AMOUNT, true);
             initialized = true;
             return true;
@@ -111,16 +110,6 @@ public enum LockingConnectionPool implements ConnectionPool {
             LOG.info("closed connection {}", conn);
         } catch (SQLException e) {
             LOG.error("Could not close connection", e);
-        }
-    }
-
-    private static void registerDrivers() {
-        LOG.trace("registering sql drivers");
-        try {
-            DriverManager.registerDriver(DriverManager.getDriver(DB_URL));
-        } catch (SQLException e) {
-            LOG.error("could not register drivers", e);
-            throw new CouldNotInitializeConnectionPool("Unsuccessful db driver registration attempt", e);
         }
     }
 
