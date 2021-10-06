@@ -1,5 +1,6 @@
 package com.epam.jwd.app;
 
+import com.epam.jwd.db.ConnectionPool;
 import com.epam.jwd.db.EntityExtractionFailedException;
 import com.epam.jwd.db.ResultSetExtractor;
 import com.epam.jwd.db.StatementPreparator;
@@ -10,23 +11,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 public class Application {
 
     private static final Logger LOG = LogManager.getLogger(Application.class);
-
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/jwd";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
 
     private static final String SELECT_ALL_SQL = "select id as id," +
             " first_name as f_name, last_name as l_name, age as" +
@@ -40,45 +34,30 @@ public class Application {
     private static final String AGE_COLUMN_NAME = "age";
     private static final String EMAIL_COLUMN_NAME = "email";
 
-    private static final String NOT_FOUND_MSG = "could not extract user";
+    private static final ConnectionPool CONNECTION_POOL = ConnectionPool.locking();
 
     public static void main(String[] args) {
         LOG.trace("program start");
-        registerDrivers();
-//        final List<User> users = fetchUsersOlderThan(30);
-        final List<User> users = fetchUsersFromDb();
+        CONNECTION_POOL.init();
+        final List<User> users;
+        try {
+            users = fetchUsersOlderThan(30);
+        } catch (InterruptedException e) {
+            LOG.info("interrupted fetching users. closing pool");
+            CONNECTION_POOL.shutDown();
+            return;
+        }
+//        final List<User> users = fetchUsersFromDb();
         users.forEach(user -> LOG.info("found user {}", user));
-        deregisterDrivers();
+        CONNECTION_POOL.shutDown();
         LOG.trace("program end");
     }
 
-    private static void registerDrivers() {
-        LOG.trace("registering sql drivers");
-        try {
-            DriverManager.registerDriver(DriverManager.getDriver(DB_URL));
-        } catch (SQLException e) {
-            LOG.error("could not register drivers", e);
-            throw new IllegalStateException("Unsuccessful db driver registration attempt");
-        }
-    }
-
-    private static void deregisterDrivers() {
-        LOG.trace("unregistering sql drivers");
-        final Enumeration<Driver> drivers = DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            try {
-                DriverManager.deregisterDriver(drivers.nextElement());
-            } catch (SQLException e) {
-                LOG.error("could not deregister driver", e);
-            }
-        }
-    }
-
-    private static List<User> fetchUsersFromDb() {
+    private static List<User> fetchUsersFromDb() throws InterruptedException {
         return executeStatement(SELECT_ALL_SQL, Application::extractUser);
     }
 
-    private static List<User> fetchUsersOlderThan(int i) {
+    private static List<User> fetchUsersOlderThan(int i) throws InterruptedException {
         return executePrepared(
                 FIND_USERS_OLDER_THAN_SQL,
                 Application::extractUser,
@@ -87,9 +66,9 @@ public class Application {
     }
 
     private static <T extends DBEntity> List<T> executePrepared(String sql,
-                                                                   ResultSetExtractor<T> extractor,
-                                                                   StatementPreparator statementPreparation) {
-        try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                                                                ResultSetExtractor<T> extractor,
+                                                                StatementPreparator statementPreparation) throws InterruptedException {
+        try (final Connection connection = CONNECTION_POOL.takeConnection();
              final PreparedStatement statement = connection.prepareStatement(sql)) {
             if (statementPreparation != null) {
                 statementPreparation.accept(statement);
@@ -101,13 +80,17 @@ public class Application {
             LOG.debug("sql: {}", sql);
         } catch (EntityExtractionFailedException e) {
             LOG.error("could not extract entity", e);
+        } catch (InterruptedException e) {
+            LOG.info("takeConnection interrupted", e);
+            Thread.currentThread().interrupt();
+            throw e;
         }
         return Collections.emptyList();
     }
 
     private static <T extends DBEntity> List<T> executeStatement(String sql,
-                                                                 ResultSetExtractor<T> extractor) {
-        try (final Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                                                                 ResultSetExtractor<T> extractor) throws InterruptedException {
+        try (final Connection connection = CONNECTION_POOL.takeConnection();
              final Statement statement = connection.createStatement();
              final ResultSet resultSet = statement.executeQuery(sql)) {
             return extractor.extractAll(resultSet);
@@ -116,6 +99,10 @@ public class Application {
             LOG.debug("sql: {}", sql);
         } catch (EntityExtractionFailedException e) {
             LOG.error("could not extract entity", e);
+        } catch (InterruptedException e) {
+            LOG.info("takeConnection interrupted", e);
+            Thread.currentThread().interrupt();
+            throw e;
         }
         return Collections.emptyList();
     }
