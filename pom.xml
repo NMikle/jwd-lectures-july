@@ -6,6 +6,7 @@
 
     <groupId>com.jwd.lecture</groupId>
     <artifactId>lectures</artifactId>
+    <packaging>war</packaging>
     <version>1</version>
     <build>
         <plugins>
@@ -21,6 +22,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
