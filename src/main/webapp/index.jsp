@@ -4,7 +4,6 @@
     <title>My awesome app!</title>
 </head>
 <body>
-<h1>World Hello</h1>
-<p>sent from jsp</p>
+<jsp:forward page="/controller" />
 </body>
 </html>
