@@ -9,9 +9,9 @@ public enum ShowBikesPageCommand implements Command {
     INSTANCE;
 
     private static final List<Bike> BIKES = Arrays.asList(
-            new Bike(1, "Giant"),
-            new Bike(2, "Aist"),
-            new Bike(3, "Stels")
+            new Bike(1L, "Giant"),
+            new Bike(2L, "Aist"),
+            new Bike(3L, "Stels")
     );
     private static final String BIKES_ATTRIBUTE_NAME = "bikes";
 

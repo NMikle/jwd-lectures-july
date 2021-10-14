@@ -2,17 +2,17 @@ package com.epam.jwd.web.model;
 
 import java.util.Objects;
 
-public class Bike {
+public class Bike implements Entity {
 
-    private final Integer id;
+    private final Long id;
     private final String model;
 
-    public Bike(Integer id, String model) {
+    public Bike(Long id, String model) {
         this.id = id;
         this.model = model;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
