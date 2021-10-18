@@ -1,8 +1,8 @@
 package com.epam.jwd.web.controller;
 
 import com.epam.jwd.web.command.Command;
-import com.epam.jwd.web.command.CommandRequest;
 import com.epam.jwd.web.command.CommandResponse;
+import com.epam.jwd.web.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +21,16 @@ public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 6402257749317104549L;
 
     private static final Logger LOG = LogManager.getLogger(MainServlet.class);
+
+    @Override
+    public void init() {
+        ConnectionPool.locking().init();
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionPool.locking().shutDown();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {

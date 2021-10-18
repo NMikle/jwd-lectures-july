@@ -5,7 +5,7 @@ import com.epam.jwd.web.model.Entity;
 import java.util.List;
 import java.util.Optional;
 
-public interface GenericDao<T extends Entity> {
+public interface EntityDao<T extends Entity> {
 
     T create(T entity);
 

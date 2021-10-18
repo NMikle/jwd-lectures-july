@@ -1,18 +1,14 @@
 package com.epam.jwd.web.command;
 
 import com.epam.jwd.web.model.Bike;
+import com.epam.jwd.web.service.EntityService;
+import com.epam.jwd.web.service.ServiceFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 public enum ShowBikesPageCommand implements Command {
-    INSTANCE;
+    INSTANCE(ServiceFactory.simple().serviceFor(Bike.class));
 
-    private static final List<Bike> BIKES = Arrays.asList(
-            new Bike(1L, "Giant"),
-            new Bike(2L, "Aist"),
-            new Bike(3L, "Stels")
-    );
     private static final String BIKES_ATTRIBUTE_NAME = "bikes";
 
     private static final CommandResponse FORWARD_TO_BIKES_PAGE = new CommandResponse() {
@@ -27,10 +23,16 @@ public enum ShowBikesPageCommand implements Command {
         }
     };
 
+    private final EntityService<Bike> service;
+
+    ShowBikesPageCommand(EntityService<Bike> service) {
+        this.service = service;
+    }
+
     @Override
     public CommandResponse execute(CommandRequest request) {
-        //todo: get bikes from database
-        request.addAttributeToJsp(BIKES_ATTRIBUTE_NAME, BIKES);
+        final List<Bike> bikes = service.findAll();
+        request.addAttributeToJsp(BIKES_ATTRIBUTE_NAME, bikes);
         return FORWARD_TO_BIKES_PAGE;
     }
 }

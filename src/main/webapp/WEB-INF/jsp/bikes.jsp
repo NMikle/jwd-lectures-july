@@ -6,10 +6,18 @@
 </head>
 <body>
 <h3>Cool bikes</h3>
-<ul>
+<table>
+    <tr>
+        <th>Model</th>
+        <th>Price</th>
+<%--        <th>Owner</th>--%>
+    </tr>
     <c:forEach var="bike" items="${requestScope.bikes}">
-        <li>${bike.model}</li>
+        <tr>
+            <td>${bike.model}</td>
+            <td>${bike.price}</td>
+        </tr>
     </c:forEach>
-</ul>
+</table>
 </body>
 </html>
