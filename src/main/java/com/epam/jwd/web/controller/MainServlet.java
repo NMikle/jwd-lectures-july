@@ -24,12 +24,12 @@ public class MainServlet extends HttpServlet {
 
     @Override
     public void init() {
-        ConnectionPool.locking().init();
+        ConnectionPool.instance().init();
     }
 
     @Override
     public void destroy() {
-        ConnectionPool.locking().shutDown();
+        ConnectionPool.instance().shutDown();
     }
 
     @Override

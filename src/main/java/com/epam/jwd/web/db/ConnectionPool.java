@@ -4,6 +4,10 @@ import java.sql.Connection;
 
 public interface ConnectionPool {
 
+    static ConnectionPool instance() {
+        return TransactionConnectionPool.getInstance();
+    }
+
     static ConnectionPool locking() {
         return LockingConnectionPool.INSTANCE;
     }

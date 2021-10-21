@@ -5,8 +5,10 @@ import com.epam.jwd.web.model.Bike;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,10 @@ public final class MethodBikeDao extends CommonDao<Bike> implements BikeDao {
     private static final String ID_FIELD_NAME = "id";
     private static final String MODEL_FIELD_NAME = "model";
     private static final String PRICE_FIELD_NAME = "price";
-    public static final String SELECT_USER_ID_FROM_BIKE = "select user_id from u_bike b where b.id = ?";
+    private static final String SELECT_USER_ID_FROM_BIKE = "select user_id from u_bike b where b.id = ?";
+    private static final List<String> FIELDS = Arrays.asList(
+            "id", "model", "price", "user_id"
+    );
 
     private MethodBikeDao(ConnectionPool pool) {
         super(pool, LOG);
@@ -31,12 +36,25 @@ public final class MethodBikeDao extends CommonDao<Bike> implements BikeDao {
     }
 
     @Override
+    protected List<String> getFields() {
+        return FIELDS;
+    }
+
+    @Override
     protected Bike extractResult(ResultSet rs) throws SQLException {
         return new Bike(
                 rs.getLong(ID_FIELD_NAME),
                 rs.getString(MODEL_FIELD_NAME),
                 rs.getBigDecimal(PRICE_FIELD_NAME)
         );
+    }
+
+    @Override
+    protected void fillEntity(PreparedStatement statement, Bike entity) throws SQLException {
+        statement.setLong(1, entity.getId());
+        statement.setString(2, entity.getModel());
+        statement.setBigDecimal(3, entity.getPrice());
+        statement.setLong(3, entity.getOwner().getId());
     }
 
     @Override
@@ -70,6 +88,6 @@ public final class MethodBikeDao extends CommonDao<Bike> implements BikeDao {
     }
 
     private static class Holder {
-        public static final BikeDao INSTANCE = new MethodBikeDao(ConnectionPool.locking());
+        public static final BikeDao INSTANCE = new MethodBikeDao(ConnectionPool.instance());
     }
 }

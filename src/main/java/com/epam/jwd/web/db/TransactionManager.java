@@ -1,5 +1,7 @@
 package com.epam.jwd.web.db;
 
+import java.util.Optional;
+
 public interface TransactionManager {
 
     void initTransaction();
@@ -8,8 +10,10 @@ public interface TransactionManager {
 
     boolean isTransactionActive();
 
+    Optional<TransactionId> getTransactionId();
+
     static TransactionManager instance() {
-        return null;
+        return ThreadLocalTransactionManager.INSTANCE;
     }
 
 }

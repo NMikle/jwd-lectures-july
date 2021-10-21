@@ -15,21 +15,40 @@ import java.util.Optional;
 
 public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
 
-    public static final String SELECT_ALL_FROM = "select * from ";
+    private static final String SELECT_ALL_FROM = "select * from ";
+    private static final String WHERE_ID = "where id = ?";
+    private static final String INSERT_INTO = "insert into %s (%s)";
+    private static final String SPACE = " ";
+    private static final String COMMA = ", ";
 
     protected final ConnectionPool pool;
     private final String selectAllExpression;
+    private final String selectByIdExpression;
+    private final String insertSql;
     private final Logger logger;
 
     protected CommonDao(ConnectionPool pool, Logger logger) {
         this.pool = pool;
         this.logger = logger;
-        selectAllExpression = SELECT_ALL_FROM + getTableName();
+        this.selectAllExpression = SELECT_ALL_FROM + getTableName();
+        this.selectByIdExpression = selectAllExpression + SPACE + WHERE_ID;
+        this.insertSql = String.format(INSERT_INTO, getTableName(), String.join(COMMA, getFields()));
     }
 
     @Override
     public T create(T entity) {
-        return null;//todo: implement
+        try {
+            final int rowsUpdated = executePreparedUpdate(insertSql, st -> fillEntity(st, entity));
+            if (rowsUpdated > 0) {
+//                read() //todo: read by unique param
+                return null;
+            }
+            return null; //todo: throw exc
+        } catch (InterruptedException e) {
+            logger.info("takeConnection interrupted", e);
+            Thread.currentThread().interrupt();
+            return null;
+        }
     }
 
     @Override
@@ -46,7 +65,15 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
 
     @Override
     public Optional<T> read(Long id) {
-        return Optional.empty();//todo: implement
+        try {
+            return executePreparedForGenericEntity(selectByIdExpression,
+                    this::extractResultCatchingException,
+                    st -> st.setLong(1, id));
+        } catch (InterruptedException e) {
+            logger.info("takeConnection interrupted", e);
+            Thread.currentThread().interrupt();
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -107,7 +134,9 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
                 statementPreparation.accept(statement);
             }
             final ResultSet resultSet = statement.executeQuery();
-            return Optional.ofNullable(extractor.extract(resultSet));
+            return resultSet.next()
+                    ? Optional.ofNullable(extractor.extract(resultSet))
+                    : Optional.empty();
         } catch (SQLException e) {
             logger.error("sql exception occurred", e);
             logger.debug("sql: {}", sql);
@@ -121,7 +150,23 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
         return Optional.empty();
     }
 
-    protected abstract String getTableName();
+    protected int executePreparedUpdate(String sql, StatementPreparator statementPreparation) throws InterruptedException {
+        try (final Connection connection = pool.takeConnection();
+             final PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (statementPreparation != null) {
+                statementPreparation.accept(statement);
+            }
+            return statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("sql exception occurred", e);
+            logger.debug("sql: {}", sql);
+        } catch (InterruptedException e) {
+            logger.info("takeConnection interrupted", e);
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+        return 0;
+    }
 
     protected T extractResultCatchingException(ResultSet rs) throws EntityExtractionFailedException {
         try {
@@ -132,5 +177,11 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
         }
     }
 
+    protected abstract String getTableName();
+
+    protected abstract List<String> getFields();
+
     protected abstract T extractResult(ResultSet rs) throws SQLException;
+
+    protected abstract void fillEntity(PreparedStatement statement, T entity) throws SQLException;
 }

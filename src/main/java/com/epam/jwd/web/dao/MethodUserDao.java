@@ -5,8 +5,11 @@ import com.epam.jwd.web.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 public final class MethodUserDao extends CommonDao<User> implements UserDao {
 
@@ -27,6 +30,11 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
     }
 
     @Override
+    protected List<String> getFields() {
+        return Collections.emptyList();//todo
+    }
+
+    @Override
     protected User extractResult(ResultSet rs) throws SQLException {
         return new User(
                 rs.getLong(ID_FIELD_NAME),
@@ -35,12 +43,17 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
         );
     }
 
+    @Override
+    protected void fillEntity(PreparedStatement statement, User entity) throws SQLException {
+        //todo
+    }
+
     static UserDao getInstance() {
         return Holder.INSTANCE;
     }
 
     private static class Holder {
-        public static final UserDao INSTANCE = new MethodUserDao(ConnectionPool.locking());
+        public static final UserDao INSTANCE = new MethodUserDao(ConnectionPool.instance());
     }
 
 }
