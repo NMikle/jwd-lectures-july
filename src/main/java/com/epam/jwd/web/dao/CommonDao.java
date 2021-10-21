@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
 
@@ -101,7 +100,7 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
     }
 
     protected <G> Optional<G> executePreparedForGenericEntity(String sql, ResultSetExtractor<G> extractor,
-                                                   StatementPreparator statementPreparation) throws InterruptedException {
+                                                              StatementPreparator statementPreparation) throws InterruptedException {
         try (final Connection connection = pool.takeConnection();
              final PreparedStatement statement = connection.prepareStatement(sql)) {
             if (statementPreparation != null) {

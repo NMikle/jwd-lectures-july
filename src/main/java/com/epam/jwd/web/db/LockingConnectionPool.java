@@ -37,7 +37,6 @@ public enum LockingConnectionPool implements ConnectionPool {
     @Override
     public synchronized boolean init() {
         if (!initialized) {
-            loadDriver();
             initializeConnections(INITIAL_CONNECTIONS_AMOUNT, true);
             initialized = true;
             return true;
@@ -74,14 +73,6 @@ public enum LockingConnectionPool implements ConnectionPool {
             this.notifyAll();
         } else {
             LOG.warn("Attempt to add unknown connection to Connection Pool. Connection: {}", connection);
-        }
-    }
-
-    private void loadDriver() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new CouldNotInitializeConnectionPoolError("Failed to load Driver", e);
         }
     }
 
