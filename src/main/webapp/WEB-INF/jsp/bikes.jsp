@@ -14,7 +14,7 @@
     </tr>
     <c:forEach var="bike" items="${requestScope.bikes}">
         <tr>
-            <td>${bike.model}</td>
+            <td><a href="/controller?command=show_bike&id=${bike.id}">${bike.model}</a></td>
             <td>${bike.price}</td>
         </tr>
     </c:forEach>

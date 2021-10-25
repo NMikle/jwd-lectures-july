@@ -3,6 +3,9 @@ package com.epam.jwd.web.command;
 public enum CommandRegistry {
     MAIN_PAGE(ShowMainPageCommand.INSTANCE, "main_page"),
     SHOW_BIKES(ShowBikesPageCommand.INSTANCE, "show_bikes"),
+    SHOW_LOGIN(ShowLoginPageCommand.INSTANCE, "show_login"),
+    LOGIN(LoginCommand.INSTANCE, "login"),
+    LOGOUT(LogoutCommand.INSTANCE, "logout"),
     DEFAULT(ShowMainPageCommand.INSTANCE, "");
 
     private final Command command;

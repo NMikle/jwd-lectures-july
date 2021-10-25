@@ -7,11 +7,13 @@ public class User implements Entity {
     private final Long id;
     private final String firstName;
     private final String lastName;
+    private final String password;
 
-    public User(Long id, String firstName, String lastName) {
+    public User(Long id, String firstName, String lastName, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
     }
 
     @Override
@@ -27,6 +29,10 @@ public class User implements Entity {
         return lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,12 +40,13 @@ public class User implements Entity {
         User user = (User) o;
         return Objects.equals(id, user.id)
                 && Objects.equals(firstName, user.firstName)
-                && Objects.equals(lastName, user.lastName);
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName);
+        return Objects.hash(id, firstName, lastName, password);
     }
 
     @Override
@@ -48,6 +55,7 @@ public class User implements Entity {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

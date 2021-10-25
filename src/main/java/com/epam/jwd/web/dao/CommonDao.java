@@ -13,13 +13,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.format;
+import static java.lang.String.join;
+
 public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
 
-    private static final String SELECT_ALL_FROM = "select * from ";
-    private static final String WHERE_ID = "where id = ?";
     private static final String INSERT_INTO = "insert into %s (%s)";
-    private static final String SPACE = " ";
+    private static final String ID_FIELD_NAME = "id";
     private static final String COMMA = ", ";
+
+    protected static final String SELECT_ALL_FROM = "select * from ";
+    protected static final String WHERE_FIELD = "where %s = ?";
+    protected static final String SPACE = " ";
 
     protected final ConnectionPool pool;
     private final String selectAllExpression;
@@ -31,8 +36,8 @@ public abstract class CommonDao<T extends Entity> implements EntityDao<T> {
         this.pool = pool;
         this.logger = logger;
         this.selectAllExpression = SELECT_ALL_FROM + getTableName();
-        this.selectByIdExpression = selectAllExpression + SPACE + WHERE_ID;
-        this.insertSql = String.format(INSERT_INTO, getTableName(), String.join(COMMA, getFields()));
+        this.selectByIdExpression = selectAllExpression + SPACE + format(WHERE_FIELD, ID_FIELD_NAME);
+        this.insertSql = format(INSERT_INTO, getTableName(), join(COMMA, getFields()));
     }
 
     @Override

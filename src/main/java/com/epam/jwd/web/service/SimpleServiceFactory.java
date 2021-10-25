@@ -29,6 +29,8 @@ public enum SimpleServiceFactory implements ServiceFactory {
             switch (className) {
                 case "Bike":
                     return new BikeService(BikeDao.instance(), UserDao.instance(), TransactionManager.instance());
+                case "User":
+                    return new SimpleUserService(UserDao.instance());
                 default:
                     throw new IllegalArgumentException(String.format(SERVICE_NOT_FOUND, className));
             }
