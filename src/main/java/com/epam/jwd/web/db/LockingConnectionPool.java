@@ -86,7 +86,7 @@ public enum LockingConnectionPool implements ConnectionPool {
                 availableConnections.add(proxyConnection);
             }
         } catch (SQLException e) {
-            LOG.error("Error occurred creating Connection");
+            LOG.error("Error occurred creating Connection", e);
             if (failOnConnectionException) {
                 throw new CouldNotInitializeConnectionPoolError("Failed to create Connection", e);
             }
