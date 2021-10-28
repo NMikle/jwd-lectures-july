@@ -5,7 +5,8 @@ public enum PagePaths {
     MAIN("/WEB-INF/jsp/main.jsp"),
     BIKES("/WEB-INF/jsp/bikes.jsp"),
     LOGIN("/WEB-INF/jsp/login.jsp"),
-    USERS("/WEB-INF/jsp/users.jsp");
+    USERS("/WEB-INF/jsp/users.jsp"),
+    ERROR("/WEB-INF/jsp/error.jsp");
 
     private final String path;
 
