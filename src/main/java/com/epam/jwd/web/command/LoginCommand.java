@@ -1,5 +1,6 @@
 package com.epam.jwd.web.command;
 
+import com.epam.jwd.web.controller.PropertyContext;
 import com.epam.jwd.web.controller.RequestFactory;
 import com.epam.jwd.web.model.User;
 import com.epam.jwd.web.service.ServiceFactory;
@@ -8,10 +9,12 @@ import com.epam.jwd.web.service.UserService;
 import java.util.Optional;
 
 public enum LoginCommand implements Command {
-    INSTANCE(ServiceFactory.simple().userService(), RequestFactory.getInstance());
+    INSTANCE(ServiceFactory.simple().userService(),
+            RequestFactory.getInstance(),
+            PropertyContext.instance());
 
-    private static final String INDEX_PATH = "/";
-    private static final String LOGIN_JSP_PATH = "/WEB-INF/jsp/login.jsp";
+    private static final String INDEX_PAGE = "page.index";
+    private static final String LOGIN_PAGE = "page.login";
 
     private static final String ERROR_LOGIN_PASS_ATTRIBUTE = "errorLoginPassMessage";
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
@@ -21,10 +24,13 @@ public enum LoginCommand implements Command {
 
     private final UserService userService;
     private final RequestFactory requestFactory;
+    private final PropertyContext propertyContext;
 
-    LoginCommand(UserService userService, RequestFactory requestFactory) {
+    LoginCommand(UserService userService, RequestFactory requestFactory,
+                 PropertyContext propertyContext) {
         this.userService = userService;
         this.requestFactory = requestFactory;
+        this.propertyContext = propertyContext;
     }
 
     @Override
@@ -38,11 +44,11 @@ public enum LoginCommand implements Command {
         final Optional<User> user = userService.authenticate(login, password);
         if (!user.isPresent()) {
             request.addAttributeToJsp(ERROR_LOGIN_PASS_ATTRIBUTE, ERROR_LOGIN_PASS_MESSAGE);
-            return requestFactory.createForwardResponse(LOGIN_JSP_PATH);
+            return requestFactory.createForwardResponse(propertyContext.get(LOGIN_PAGE));
         }
         request.clearSession();
         request.createSession();
         request.addToSession(USER_SESSION_ATTRIBUTE_NAME, user.get());
-        return requestFactory.createRedirectResponse(INDEX_PATH);
+        return requestFactory.createRedirectResponse(propertyContext.get(INDEX_PAGE));
     }
 }

@@ -21,6 +21,7 @@ public class Bike implements Entity {
         this(id, model, price, null);
     }
 
+    @Override
     public Long getId() {
         return id;
     }

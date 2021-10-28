@@ -22,6 +22,6 @@ public class SimpleUserService implements UserService {
     @Override
     public Optional<User> authenticate(String email, String password) {
         final Optional<User> readUser = dao.readUserByEmail(email);
-        return readUser.filter(user -> user.getPassword().equals(password));
+        return readUser.filter(user -> user.getPassword().equals(password)); //todo: hash password
     }
 }

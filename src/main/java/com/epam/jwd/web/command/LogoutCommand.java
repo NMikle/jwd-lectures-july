@@ -1,17 +1,20 @@
 package com.epam.jwd.web.command;
 
+import com.epam.jwd.web.controller.PropertyContext;
 import com.epam.jwd.web.controller.RequestFactory;
 
 public enum LogoutCommand implements Command {
-    INSTANCE(RequestFactory.getInstance());
+    INSTANCE(RequestFactory.getInstance(), PropertyContext.instance());
 
     private static final String USER_SESSION_ATTRIBUTE_NAME = "user";
-    private static final String INDEX_PATH = "/";
+    private static final String INDEX_PAGE = "page.index";
 
     private final RequestFactory requestFactory;
+    private final PropertyContext propertyContext;
 
-    LogoutCommand(RequestFactory requestFactory) {
+    LogoutCommand(RequestFactory requestFactory, PropertyContext propertyContext) {
         this.requestFactory = requestFactory;
+        this.propertyContext = propertyContext;
     }
 
     @Override
@@ -21,7 +24,7 @@ public enum LogoutCommand implements Command {
             return null;
         }
         request.clearSession();
-        return requestFactory.createRedirectResponse(INDEX_PATH);
+        return requestFactory.createRedirectResponse(propertyContext.get(INDEX_PAGE));
     }
 
     private boolean noLoggedInUserPresent(CommandRequest request) {

@@ -1,23 +1,24 @@
 package com.epam.jwd.web.command;
 
+import com.epam.jwd.web.controller.PropertyContext;
+import com.epam.jwd.web.controller.RequestFactory;
+
 public enum ShowMainPageCommand implements Command {
-    INSTANCE;
+    INSTANCE(RequestFactory.getInstance(), PropertyContext.instance());
 
-    private static final CommandResponse FORWARD_TO_MAIN_PAGE_RESPONSE = new CommandResponse() {
-        @Override
-        public boolean isRedirect() {
-            return false;
-        }
+    private static final String MAIN_PAGE = "page.main";
 
-        @Override
-        public String getPath() {
-            return "/WEB-INF/jsp/main.jsp";
-        }
-    };
+    private final RequestFactory requestFactory;
+    private final PropertyContext propertyContext;
+
+    ShowMainPageCommand(RequestFactory requestFactory, PropertyContext propertyContext) {
+        this.requestFactory = requestFactory;
+        this.propertyContext = propertyContext;
+    }
 
     @Override
     public CommandResponse execute(CommandRequest request) {
-        return FORWARD_TO_MAIN_PAGE_RESPONSE;
+        return requestFactory.createForwardResponse(propertyContext.get(MAIN_PAGE));
     }
 
 }
