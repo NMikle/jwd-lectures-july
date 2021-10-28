@@ -3,7 +3,6 @@ package com.epam.jwd.web.controller;
 import com.epam.jwd.web.command.Command;
 import com.epam.jwd.web.command.CommandRequest;
 import com.epam.jwd.web.command.CommandResponse;
-import com.epam.jwd.web.db.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,16 +24,6 @@ public class Controller extends HttpServlet {
     private static final String COMMAND_NAME_PARAM = "command";
 
     private final RequestFactory requestFactory = RequestFactory.getInstance();
-
-    @Override
-    public void init() {
-        ConnectionPool.instance().init();
-    }
-
-    @Override
-    public void destroy() {
-        ConnectionPool.instance().shutDown();
-    }
 
     @Override
     protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
