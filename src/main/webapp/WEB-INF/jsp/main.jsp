@@ -11,6 +11,8 @@
 </c:if>
 <a href="/controller?command=show_bikes">bikes page</a>
 <br>
+<a href="/controller?command=show_users">users page</a>
+<br>
 <c:choose>
     <c:when test="${not empty sessionScope.user}">
         <a href="/controller?command=logout">logout</a>
