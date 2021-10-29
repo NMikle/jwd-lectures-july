@@ -45,6 +45,10 @@ public class User implements Entity {
         return role;
     }
 
+    public User withPassword(String password) {
+        return new User(id, firstName, lastName, password);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

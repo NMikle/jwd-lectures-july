@@ -38,4 +38,9 @@ public class BikeService implements EntityService<Bike> {
         transactionManager.commitTransaction();
         return bikes;
     }
+
+    @Override
+    public Optional<Bike> create(Bike entity) {
+        return Optional.empty(); //todo: implement
+    }
 }

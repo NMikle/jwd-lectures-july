@@ -1,5 +1,6 @@
 package com.epam.jwd.web.service;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.epam.jwd.web.dao.BikeDao;
 import com.epam.jwd.web.dao.UserDao;
 import com.epam.jwd.web.db.TransactionManager;
@@ -30,7 +31,7 @@ public enum SimpleServiceFactory implements ServiceFactory {
                 case "Bike":
                     return new BikeService(BikeDao.instance(), UserDao.instance(), TransactionManager.instance());
                 case "User":
-                    return new SimpleUserService(UserDao.instance());
+                    return new SimpleUserService(UserDao.instance(), BCrypt.withDefaults(), BCrypt.verifyer());
                 default:
                     throw new IllegalArgumentException(String.format(SERVICE_NOT_FOUND, className));
             }
