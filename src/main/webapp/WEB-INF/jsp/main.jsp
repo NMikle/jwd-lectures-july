@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.epam.jwd.web.model.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -11,8 +12,10 @@
 </c:if>
 <a href="/controller?command=show_bikes">bikes page</a>
 <br>
-<a href="/controller?command=show_users">users page</a>
-<br>
+<c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.ADMIN}">
+    <a href="/controller?command=show_users">users page</a>
+    <br>
+</c:if>
 <c:choose>
     <c:when test="${not empty sessionScope.user}">
         <a href="/controller?command=logout">logout</a>

@@ -1,6 +1,7 @@
 package com.epam.jwd.web.dao;
 
 import com.epam.jwd.web.db.ConnectionPool;
+import com.epam.jwd.web.model.Role;
 import com.epam.jwd.web.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +20,19 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
 
     private static final Logger LOG = LogManager.getLogger(MethodUserDao.class);
 
-    private static final String USER_TABLE_NAME = "jwd_user";
-    private static final String ID_FIELD_NAME = "id";
-    private static final String EMAIL_FIELD_NAME = "email";
-    private static final String F_NAME_FIELD_NAME = "first_name";
-    private static final String L_NAME_FIELD_NAME = "last_name";
-    private static final String PASSWORD_FIELD_NAME = "u_pass";
+    private static final String USER_TABLE_NAME = "jwd_user j join u_role r on r.id = j.role_id";
+    private static final String ID_FIELD_NAME = "j.id";
+    private static final String EMAIL_FIELD_NAME = "j.email";
+    private static final String F_NAME_FIELD_NAME = "j.first_name";
+    private static final String L_NAME_FIELD_NAME = "j.last_name";
+    private static final String PASSWORD_FIELD_NAME = "j.u_pass";
+    private static final String ROLE_FIELD_NAME = "r.r_name";
+
+    private static final List<String> FIELDS = Arrays.asList(
+            ID_FIELD_NAME, EMAIL_FIELD_NAME,
+            F_NAME_FIELD_NAME, L_NAME_FIELD_NAME,
+            PASSWORD_FIELD_NAME, ROLE_FIELD_NAME
+    );
 
     private final String selectByEmailExpression;
 
@@ -48,7 +57,8 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
                 rs.getLong(ID_FIELD_NAME),
                 rs.getString(F_NAME_FIELD_NAME),
                 rs.getString(L_NAME_FIELD_NAME),
-                rs.getString(PASSWORD_FIELD_NAME)
+                rs.getString(PASSWORD_FIELD_NAME),
+                Role.of(rs.getString(ROLE_FIELD_NAME))
         );
     }
 

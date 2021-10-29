@@ -14,4 +14,13 @@ public enum Role {
         return ALL_AVAILABLE_ROLES;
     }
 
+    public static Role of(String name) {
+        for (Role role : values()) {
+            if (role.name().equalsIgnoreCase(name)) {
+                return role;
+            }
+        }
+        return USER;
+    }
+
 }

@@ -2,18 +2,26 @@ package com.epam.jwd.web.model;
 
 import java.util.Objects;
 
+import static com.epam.jwd.web.model.Role.USER;
+
 public class User implements Entity {
 
     private final Long id;
     private final String firstName;
     private final String lastName;
     private final String password;
+    private final Role role;
 
     public User(Long id, String firstName, String lastName, String password) {
+        this(id, firstName, lastName, password, USER);
+    }
+
+    public User(Long id, String firstName, String lastName, String password, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.role = role;
     }
 
     @Override
@@ -33,6 +41,10 @@ public class User implements Entity {
         return password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,12 +53,15 @@ public class User implements Entity {
         return Objects.equals(id, user.id)
                 && Objects.equals(firstName, user.firstName)
                 && Objects.equals(lastName, user.lastName)
-                && Objects.equals(password, user.password);
+                && Objects.equals(password, user.password)
+                && role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, password);
+        return Objects.hash(id, firstName,
+                lastName, password,
+                role);
     }
 
     @Override
@@ -56,6 +71,8 @@ public class User implements Entity {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role +
                 '}';
     }
+
 }

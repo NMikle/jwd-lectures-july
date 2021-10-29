@@ -3,6 +3,7 @@ package com.epam.jwd.web.filter;
 import com.epam.jwd.web.command.Command;
 import com.epam.jwd.web.command.CommandRegistry;
 import com.epam.jwd.web.model.Role;
+import com.epam.jwd.web.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,8 +68,8 @@ public class RoleFilter implements Filter {
 
     private Role retrieveCurrentUserRole(HttpServletRequest request) {
         return Optional.ofNullable(request.getSession(false))
-                .map(s -> s.getAttribute(USER_SESSION_ATTRIBUTE_NAME))
-                .map(u -> Role.USER)
+                .map(s -> (User) s.getAttribute(USER_SESSION_ATTRIBUTE_NAME))
+                .map(User::getRole)
                 .orElse(Role.UNAUTHORIZED);
     }
 
