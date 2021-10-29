@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -38,7 +39,7 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
 
     private MethodUserDao(ConnectionPool pool) {
         super(pool, LOG);
-        this.selectByEmailExpression = SELECT_ALL_FROM + getTableName() + SPACE + format(WHERE_FIELD, EMAIL_FIELD_NAME);
+        this.selectByEmailExpression = format(SELECT_ALL_FROM, String.join(", ", getFields())) + getTableName() + SPACE + format(WHERE_FIELD, EMAIL_FIELD_NAME);
     }
 
     @Override
@@ -48,7 +49,12 @@ public final class MethodUserDao extends CommonDao<User> implements UserDao {
 
     @Override
     protected List<String> getFields() {
-        return Collections.emptyList();//todo
+        return FIELDS;
+    }
+
+    @Override
+    protected String getIdFieldName() {
+        return ID_FIELD_NAME;
     }
 
     @Override

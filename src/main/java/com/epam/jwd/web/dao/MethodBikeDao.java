@@ -41,6 +41,11 @@ public final class MethodBikeDao extends CommonDao<Bike> implements BikeDao {
     }
 
     @Override
+    protected String getIdFieldName() {
+        return ID_FIELD_NAME;
+    }
+
+    @Override
     protected Bike extractResult(ResultSet rs) throws SQLException {
         return new Bike(
                 rs.getLong(ID_FIELD_NAME),
