@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="jwds" uri="jwd.epam.com" %>
 <%@ page import="com.epam.jwd.web.model.Role" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="${cookie.lang.value}" />
@@ -17,9 +18,7 @@
 </head>
 <body>
 <h1>${helloMessage}</h1>
-<c:if test="${not empty sessionScope.user}">
-    <p>${welcomeMessage} ${sessionScope.user.firstName}</p>
-</c:if>
+<jwds:welcomeUser text="${welcomeMessage}"/>
 <a href="${pageContext.request.contextPath}/controller?command=show_bikes">${bikesLink}</a>
 <br>
 <c:if test="${not empty sessionScope.user && sessionScope.user.role eq Role.ADMIN}">
