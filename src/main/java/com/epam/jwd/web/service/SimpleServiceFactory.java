@@ -29,9 +29,9 @@ public enum SimpleServiceFactory implements ServiceFactory {
             final String className = clazz.getSimpleName();
             switch (className) {
                 case "Bike":
-                    return new BikeService(BikeDao.instance(), UserDao.instance(), TransactionManager.instance());
+                    return ProxyEntityService.of(new BikeService(BikeDao.instance(), UserDao.instance()));
                 case "User":
-                    return new SimpleUserService(UserDao.instance(), BCrypt.withDefaults(), BCrypt.verifyer());
+                    return ProxyEntityService.of(new SimpleUserService(UserDao.instance(), BCrypt.withDefaults(), BCrypt.verifyer()));
                 default:
                     throw new IllegalArgumentException(String.format(SERVICE_NOT_FOUND, className));
             }

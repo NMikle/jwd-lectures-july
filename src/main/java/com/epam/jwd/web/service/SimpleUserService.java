@@ -3,6 +3,8 @@ package com.epam.jwd.web.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.epam.jwd.web.dao.UserDao;
 import com.epam.jwd.web.model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.Optional;
 import static at.favre.lib.crypto.bcrypt.BCrypt.MIN_COST;
 
 public class SimpleUserService implements UserService {
+
+    private static final Logger LOGGER = LogManager.getLogger(SimpleUserService.class);
 
     private static final byte[] DUMMY_PASSWORD = "password".getBytes(StandardCharsets.UTF_8);
     private final UserDao dao;
@@ -26,6 +30,7 @@ public class SimpleUserService implements UserService {
 
     @Override
     public List<User> findAll() {
+        LOGGER.trace("retrieving all users");
         return dao.read();
     }
 
@@ -37,7 +42,9 @@ public class SimpleUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Optional<User> authenticate(String email, String password) {
+        LOGGER.trace("authenticating user");
         if (email == null || password == null) {
             return Optional.empty();
         }
