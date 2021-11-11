@@ -2,20 +2,21 @@ plugins {
     id 'java'
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+//repositories {
+//    mavenLocal()
+//    mavenCentral()
+//}
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-group = 'com.jwd.lecture'
+group = 'com.epam.jwd.mds'
 version = '1'
-description = 'lectures'
+description = 'java 9 modules example'
 
-dependencies {
-    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
-}
+//dependencies {
+//    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+//    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+//}

@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.epam.jwd.mds.core'
+version '1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':service-api')
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+}

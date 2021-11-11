@@ -1,0 +1,6 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.epam.jwd.mds.api'
+version '1'
