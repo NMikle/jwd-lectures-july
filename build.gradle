@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+group = 'com.jwd.lecture'
+version = '1'
+description = 'lectures'
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+}
